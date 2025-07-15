@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Produtos - E-commerce</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Lista de Produtos</h1>
+
+    <div th:if="${mensagemSucesso}" class="alert success">
+        <p th:text="${mensagemSucesso}"></p>
+    </div>
+    <div th:if="${mensagemErro}" class="alert error">
+        <p th:text="${mensagemErro}"></p>
+    </div>
+
+    <div class="header-actions">
+        <a th:href="@{/produtos/novo}" class="btn">Adicionar Novo Produto</a>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="btn logout-btn">Sair</button>
+        </form>
+    </div>
+
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Preço</th>
+            <th>Quantidade</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="produto : ${produtos}">
+            <td th:text="${produto.id}"></td>
+            <td th:text="${produto.nome}"></td>
+            <td th:text="${produto.descricao}"></td>
+            <td th:text="${produto.preco}"></td>
+            <td th:text="${produto.quantidade}"></td>
+            <td>
+                <a th:href="@{/produtos/editar/{id}(id=${produto.id})}" class="btn edit-btn">Editar</a>
+                <a th:href="@{/produtos/deletar/{id}(id=${produto.id})}" class="btn delete-btn" onclick="return confirm('Tem certeza que deseja deletar este produto?');">Deletar</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${#lists.isEmpty(produtos)}">
+        <p>Nenhum produto encontrado.</p>
+    </div>
+</div>
+</body>
+</html>

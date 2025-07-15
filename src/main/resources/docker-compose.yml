@@ -1,0 +1,25 @@
+version: '3.8' # Versão da especificação do Docker Compose
+
+services:
+  mysql_db: # Nome do seu serviço (você usará este nome para se referir a ele de outros contêineres/configurações)
+    image: mysql:8.0 # Imagem oficial do MySQL Docker. Você pode especificar outra versão, se preferir.
+    container_name: ecommerce_mysql_container # Nome do contêiner Docker para fácil identificação
+    environment: # Variáveis de ambiente que o contêiner MySQL usará
+      MYSQL_ROOT_PASSWORD: root # Senha para o usuário 'root' do MySQL. **Mude esta senha!**
+      MYSQL_DATABASE: ecommerce_db # Nome do banco de dados que será criado automaticamente
+      MYSQL_USER: user # Usuário padrão que será criado (não 'root')
+      MYSQL_PASSWORD: user # Senha para o usuário padrão. **Mude esta senha!**
+    ports:
+      - "3306:3306" # Mapeia a porta 3306 do seu host para a porta 3306 do contêiner MySQL
+      # Isso permite que sua aplicação Spring Boot (rodando no host) se conecte ao MySQL no contêiner
+    volumes:
+      - mysql_data:/var/lib/mysql # Mapeia um volume Docker persistente para o diretório de dados do MySQL
+      # Isso garante que seus dados não serão perdidos se o contêiner for recriado
+    healthcheck: # Configuração para verificar a saúde do serviço MySQL
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uuser_ecommerce", "-psua_senha_usuario"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes: # Definição dos volumes nomeados
+  mysql_data: # O volume que será usado pelo serviço mysql_db para persistir os dados

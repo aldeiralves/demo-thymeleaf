@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Usuários - E-commerce</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Lista de Usuários</h1>
+
+    <div th:if="${mensagemSucesso}" class="alert success">
+        <p th:text="${mensagemSucesso}"></p>
+    </div>
+    <div th:if="${mensagemErro}" class="alert error">
+        <p th:text="${mensagemErro}"></p>
+    </div>
+
+    <div class="header-actions">
+        <a th:href="@{/register}" class="btn">Cadastrar Novo Usuário</a>
+        <a th:href="@{/produtos}" class="btn cancel-btn">Voltar para Produtos</a>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Usuário</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.username}"></td>
+            <td>
+                <a th:href="@{/users/edit/{id}(id=${user.id})}" class="btn edit-btn">Editar</a>
+                <a th:href="@{/users/delete/{id}(id=${user.id})}" class="btn delete-btn" onclick="return confirm('Tem certeza que deseja deletar este usuário?');">Deletar</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${#lists.isEmpty(users)}">
+        <p>Nenhum usuário encontrado.</p>
+    </div>
+</div>
+</body>
+</html>
