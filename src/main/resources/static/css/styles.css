@@ -1,7 +1,12 @@
-/* /static/css/styles.css - Versão simplificada para usar com Bootstrap */
+/* /static/css/styles.css - Versão adaptada para tema dark com Bootstrap */
 
 body {
-    background-color: #f8f9fa; /* Cor de fundo padrão do Bootstrap, mais suave */
+    /*
+      Em um tema dark, o ideal é que o Bootstrap controle a cor de fundo
+      através do atributo `data-bs-theme="dark"` no <html>.
+      Esta regra define um fundo escuro como padrão para garantir consistência.
+    */
+    background-color: #212529; /* Cor --bs-dark do Bootstrap */
 }
 
 /*
@@ -20,15 +25,15 @@ body {
     width: 100%;
 }
 
-/* Ajustes para o menu principal para manter o visual */
+/* Ajustes para o menu principal para o tema dark */
 .menu-container {
-    background-color: #fff;
-    border: 1px solid #dee2e6; /* Cor de borda padrão do Bootstrap */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    background-color: #343a40; /* Cor --bs-gray-800, para um card escuro */
+    border: 1px solid #495057; /* Cor --bs-gray-700, para uma borda sutil */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .menu-container h2 {
-    color: #0d6efd; /* Cor primária padrão do Bootstrap */
+    color: #fff; /* Texto branco para melhor contraste no fundo escuro */
 }
 
 /* Opcional: Aumenta o tamanho dos botões do menu */
