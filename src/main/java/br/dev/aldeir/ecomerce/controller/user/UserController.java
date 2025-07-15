@@ -63,9 +63,9 @@ public class UserController {
     public String deleteUser(@PathVariable Long id, RedirectAttributes ra) {
         try {
             userService.deleteById(id);
-            ra.addFlashAttribute("mensagemSucesso", "Usuário deletado com sucesso!");
+            ra.addFlashAttribute("mensagemSucesso", "Usuário excluído com sucesso!");
         } catch (Exception e) { // Captura exceções caso o ID não exista, etc.
-            ra.addFlashAttribute("mensagemErro", "Erro ao deletar usuário: " + e.getMessage());
+            ra.addFlashAttribute("mensagemErro", "Erro ao excluir usuário: " + e.getMessage());
         }
         return "redirect:/users";
     }

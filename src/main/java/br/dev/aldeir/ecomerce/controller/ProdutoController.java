@@ -55,8 +55,12 @@ public class ProdutoController {
     // Deleta um produto
     @GetMapping("/deletar/{id}") // Usamos GET aqui para simplificar, mas em produção um POST/DELETE seria mais seguro
     public String deletarProduto(@PathVariable Long id, RedirectAttributes ra) {
-        produtoService.deleteById(id);
-        ra.addFlashAttribute("mensagemSucesso", "Produto deletado com sucesso!");
+        try {
+            produtoService.deleteById(id);
+            ra.addFlashAttribute("mensagemSucesso", "Produto excluído com sucesso!");
+        } catch (Exception e) { // Captura exceções caso o ID não exista, etc.
+            ra.addFlashAttribute("mensagemErro", "Erro ao excluir produto: " + e.getMessage());
+        }
         return "redirect:/produtos"; // Redireciona para a lista de produtos
     }
 }
