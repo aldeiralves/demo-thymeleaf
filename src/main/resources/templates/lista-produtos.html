@@ -4,56 +4,125 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Produtos - E-commerce</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/styles.css"> <!-- O seu CSS original é mantido, caso queira sobrescrever algo -->
 </head>
-<body>
-<div class="container">
-    <h1>Lista de Produtos</h1>
+<body class="bg-light-subtle">
 
-    <div th:if="${mensagemSucesso}" class="alert success">
-        <p th:text="${mensagemSucesso}"></p>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">E-commerce</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/}">Início</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/produtos}">Produtos</a></li>
+                <li class="nav-item"><a class="nav-link active" aria-current="page" th:href="@{/users}">Usuários</a></li>
+            </ul>
+            <form th:action="@{/logout}" method="post" class="d-flex">
+                <button class="btn btn-outline-light" type="submit">Sair</button>
+            </form>
+        </div>
     </div>
-    <div th:if="${mensagemErro}" class="alert error">
-        <p th:text="${mensagemErro}"></p>
+</nav>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Lista de Produtos</h2>
+        <a th:href="@{/produtos/novo}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i> Adicionar Novo Produto
+        </a>
     </div>
 
-    <div class="header-actions">
-        <a th:href="@{/produtos/novo}" class="btn">Adicionar Novo Produto</a>
-        <form th:action="@{/logout}" method="post" style="display:inline;">
-            <button type="submit" class="btn logout-btn">Sair</button>
-        </form>
+    <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${mensagemSucesso}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${mensagemErro}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
-
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Descrição</th>
-            <th>Preço</th>
-            <th>Quantidade</th>
-            <th>Ações</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="produto : ${produtos}">
-            <td th:text="${produto.id}"></td>
-            <td th:text="${produto.nome}"></td>
-            <td th:text="${produto.descricao}"></td>
-            <td th:text="${produto.preco}"></td>
-            <td th:text="${produto.quantidade}"></td>
-            <td>
-                <a th:href="@{/produtos/editar/{id}(id=${produto.id})}" class="btn edit-btn">Editar</a>
-                <a th:href="@{/produtos/deletar/{id}(id=${produto.id})}" class="btn delete-btn" onclick="return confirm('Tem certeza que deseja deletar este produto?');">Deletar</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <div th:if="${#lists.isEmpty(produtos)}">
-        <p>Nenhum produto encontrado.</p>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Descrição</th>
+                        <th>Preço</th>
+                        <th>Quantidade</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="produto : ${produtos}">
+                        <td th:text="${produto.id}"></td>
+                        <td th:text="${produto.nome}"></td>
+                        <td th:text="${produto.descricao}"></td>
+                        <td th:text="${'R$ ' + #numbers.formatDecimal(produto.preco, 1, 'POINT', 2, 'COMMA')}"></td>
+                        <td th:text="${produto.quantidade}"></td>
+                        <td class="text-end">
+                            <a th:href="@{/produtos/editar/{id}(id=${produto.id})}" class="btn btn-warning btn-sm" title="Editar"><i class="bi bi-pencil-fill"></i></a>
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                    th:data-product-id="${produto.id}"
+                                    th:data-product-name="${produto.nome}"
+                                    title="Deletar">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(produtos)}">
+                        <td colspan="6" class="text-center py-4">Nenhum produto encontrado.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- Modal de Confirmação para Exclusão -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="deleteModalLabel">Confirmar Exclusão</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Você tem certeza que deseja excluir o produto <strong id="productNameInModal"></strong>?
+            </div>
+            <div class="modal-footer">
+                <!-- O formulário de deleção agora é acionado pelo modal -->
+                <form th:action="@{/produtos/deletar}" method="post">
+                    <input type="hidden" name="id" id="productIdToDelete"/>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Sim, Excluir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+<script>
+    // Popula o modal com os dados do produto a ser excluído
+    const deleteModal = document.getElementById('deleteModal');
+    if (deleteModal) {
+        deleteModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+            const productId = button.getAttribute('data-product-id');
+            const productName = button.getAttribute('data-product-name');
+
+            deleteModal.querySelector('#productNameInModal').textContent = productName;
+            deleteModal.querySelector('#productIdToDelete').value = productId;
+        });
+    }
+</script>
 </body>
 </html>
