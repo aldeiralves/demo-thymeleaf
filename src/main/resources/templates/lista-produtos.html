@@ -67,12 +67,7 @@
                         <td th:text="${produto.quantidade}"></td>
                         <td class="text-end">
                             <a th:href="@{/produtos/editar/{id}(id=${produto.id})}" class="btn btn-warning btn-sm" title="Editar"><i class="bi bi-pencil-fill"></i></a>
-                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                    th:data-product-id="${produto.id}"
-                                    th:data-product-name="${produto.nome}"
-                                    title="Deletar">
-                                <i class="bi bi-trash-fill"></i>
-                            </button>
+                            <a th:href="@{/produtos/deletar/{id}(id=${produto.id})}" class="btn btn-danger btn-sm" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir este produto?');"><i class="bi bi-trash3-fill"></i></a>
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(produtos)}">
@@ -85,44 +80,7 @@
     </div>
 </div>
 
-<!-- Modal de Confirmação para Exclusão -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="deleteModalLabel">Confirmar Exclusão</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Você tem certeza que deseja excluir o produto <strong id="productNameInModal"></strong>?
-            </div>
-            <div class="modal-footer">
-                <!-- O formulário de deleção agora é acionado pelo modal -->
-                <form th:action="@{/produtos/deletar}" method="post">
-                    <input type="hidden" name="id" id="productIdToDelete"/>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-danger">Sim, Excluir</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-<script>
-    // Popula o modal com os dados do produto a ser excluído
-    const deleteModal = document.getElementById('deleteModal');
-    if (deleteModal) {
-        deleteModal.addEventListener('show.bs.modal', event => {
-            const button = event.relatedTarget;
-            const productId = button.getAttribute('data-product-id');
-            const productName = button.getAttribute('data-product-name');
-
-            deleteModal.querySelector('#productNameInModal').textContent = productName;
-            deleteModal.querySelector('#productIdToDelete').value = productId;
-        });
-    }
-</script>
 </body>
 </html>
